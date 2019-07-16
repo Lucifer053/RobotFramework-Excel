@@ -8,5 +8,5 @@
   <li>Python >= 3.3</li>
   <li>Robot Framework >= 3.0</li>
   <li>pypiwin32 => install by pip command </li>
-  <li>pip3 install pypiwin32</li>
+  <div class="highlight highlight-source-shell">pip3 install pypiwin32</div>
  </ul>
