@@ -12,3 +12,8 @@
    <div class="highlight highlight-source-shell">
     <pre>pip3 install pypiwin32</pre>
    </div>
+   
+  <h1>Limitation</h1>
+  <ul>
+  <li>Support Only ".xlsx" file format</li>
+  </ul
