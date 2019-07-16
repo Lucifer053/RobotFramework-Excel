@@ -15,5 +15,5 @@
    
   <h1>Limitation</h1>
   <ul>
-  <li>Support Only ".xlsx" file format</li>
+  <li>Support only ".xlsx" file format</li>
   </ul
