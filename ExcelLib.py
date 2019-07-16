@@ -11,58 +11,231 @@ class ExcelLib():
         self.xl = None
 
     def Open_Excel(self, ExcelPath):
+        """
+        Opens the Excel file to read from the path provided in the file path parameter.
+
+        Arguments:
+                |  File Path (string) | The Excel file name or path will be opened.  |
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Open Excel           |  C:\\Python_Work\\SampleTest.xlsx  |
+
+        """
         self.xl = win32com.client.Dispatch('Excel.Application')
         self.wb = self.xl.Workbooks.Open(ExcelPath)
 
-    def GetSheetCount(self):
+    def Get_Sheet_Count(self):
+        """
+        Returns the number of worksheets in the current workbook.
+
+        Example:
+
+        | *Keywords*              |  *Parameters*                                      |
+        | Open Excel              |  C:\\Python_Work\\SampleTest.xlsx  |
+        | ${sheetcount}    |  Get Sheets Count                                              |
+
+        """
         return self.wb.Worksheets.Count
 
-    def GetSheetName(self):
+    def Get_Sheet_Name(self):
+        """
+        Returns the names of all the worksheets in the current workbook.
+
+        Example:
+
+        | *Keywords*              |  *Parameters*                                      |
+        | Open Excel              |  C:\\Python_Work\\SampleTest.xlsx  |
+        | ${sheetname}    |  Get Sheets Names                                                    |
+
+        """
         return self.wb.Activesheet.Name
 
-    def GetRowCount(self,SheetName):
+    def Get_Row_Count(self,SheetName):
+        """
+        Returns the specific number of rows of the sheet name specified.
+
+        Arguments:
+                |  Sheet Name (string)  | The selected sheet that the row count will be returned from. |
+        Example:
+
+        | *Keywords*          |  *Parameters*                                      |
+        | Open Excel          |  C:\\Python_Work\\SampleTest.xlsx                   |
+        | ${RowCount}           |  Get Row Count                                     | TestSheet1 |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         allData = ws.UsedRange
         return allData.Rows.Count
 
-    def GetColumnCount(self,SheetName):
+    def Get_Column_Count(self,SheetName):
+        """
+        Returns the specific number of Column of the sheet name specified.
+
+        Arguments:
+                |  Sheet Name (string)  | The selected sheet that the row count will be returned from. |
+        Example:
+
+        | *Keywords*          |  *Parameters*                                      |
+        | Open Excel          |  C:\\Python_Work\\SampleTest.xlsx  |                |
+        | ${ColCount}        |  Get Column Count                                        | TestSheet1 |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         allData = ws.UsedRange
         return allData.Columns.Count
 
-    def GetCellData(self,SheetName,iRow,iCol):
+    def Read_Cell_Data(self,SheetName,iRow,iCol):
+        """
+        Uses the column and row to return the data from that cell.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell value will be returned from.             |
+                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
+                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+        Example:
+
+        | *Keywords*                |  *Parameters*                                             |
+        | Open Excel                |  C:\\Python_Work\\SampleTest.xlsx  |      |
+        | ${data}    |  Read Cell Data                                        |  Sheet1  |   1  |   1  |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         allData = ws.UsedRange
         return allData.Cells(int(iRow),int(iCol))
 
-    def GetCellData_By_Name(self,SheetName,CellName):
+    def Read_Cell_Data_By_Name(self,SheetName,CellName):
+        """
+        Uses the cell name to return the data from that cell.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell value will be returned from.             |
+                |  Cell Name (string)                       | The selected cell name that the value will be returned from.              |
+        Example:
+
+        | *Keywords*                |  *Parameters*                                             |
+        | Open Excel                |  C:\\Python_Work\\SampleTest.xlsx  |      |
+        | ${data}    |  Read Cell Data By Name                                      |  Sheet1  |   A1  |     |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         allData = ws.UsedRange
         return allData.Range(CellName)
 
     def Write_Cell_Data(self,SheetName,iRow,iCol,TestData):
+        """
+        Write data to cell by using the column and row.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
+                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
+                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+                |  Value (string)   | Raw value or string value    |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | Write Cell Data |  Sheet1                                        |  1  |    1    |  SampleData     |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         ws.Cells(int(iRow),int(iCol)).Value = TestData
 
     def Write_Cell_Data_By_Name(self,SheetName,CellName,TestData):
+        """
+        Write data to cell by using the given sheet name and the given cell that defines by name.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
+                |  Cell Name (string)                       | The selected cell name that the value will be returned from.                  |
+                |  Value (string)   | Raw value or string value    |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | Write Cell Data By Name |  Sheet1                                        |  A2  |  SampleData           |       |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         ws.Range(CellName).Value = TestData
 
     def Clear_Cell_Data(self,SheetName,iRow,iCol):
+        """
+        Delete cell data by using the column and row.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
+                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
+                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | Clear Cell Data |  Sheet1                                        |  1  |    1    |       |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         ws.Cells(int(iRow),int(iCol)).Value = ''
 
     def Clear_Cell_Data_By_Name(self,SheetName,CellName):
+        """
+        Delete cell data by using the given sheet name and the given cell that defines by name.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
+                |  Cell Name (string)                       | The selected cell name that the value will be returned from.                  |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | Clear Cell Data By Name |  Sheet1                                        |  A1  |        |       |
+
+        """
         ws = self.wb.Worksheets(SheetName)
         ws.Range(CellName).Value = ''
 
     def Save_Excel(self):
+        """
+        Saves the Excel file that was opened to write before.
+
+        Example:
+
+        | *Keywords*            |  *Parameters*                                      |
+        | Open Excel To Write   |  C:\\Python_Work\\SampleTest.xlsx  |                  |
+        | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
+        | Save Excel            |                                                    |                  |
+
+        """
         self.wb.Save()
 
-    def SaveAs_Excel(self,ExcelPath):
+    def Save_As_Excel(self,ExcelPath):
+        """
+        Saves the Excel file that was opened to destination path
+
+        Example:
+
+        | *Keywords*            |  *Parameters*                                      |
+        | Open Excel To Write   |  C:\\Python_Work\\SampleTest.xlsx  |                  |
+        | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
+        | Save As Excel           |  C:\\Python_Work\\SampleTest.xlsx  |                                                |                  |
+
+        """
         self.wb.Save(ExcelPath)
 
+
+
     def Close_Excel(self):
+        """
+        Close the Excel file
+
+        Example:
+
+        | *Keywords*            |  *Parameters*                                      |
+        | Open Excel To Write   |  C:\\Python27\\ExcelRobotTest\\ExcelRobotTest.xlsx  |                  |
+        | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
+        | Close Excel          |    |                                                |                  |
+
+        """
         self.wb.Close()
         self.xl.Quit()
         self.xl = None
