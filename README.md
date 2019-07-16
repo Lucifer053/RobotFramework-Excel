@@ -7,5 +7,6 @@
  <ul>
   <li>Python >= 3.3</li>
   <li>Robot Framework >= 3.0</li>
-  <li>pypiwin32</li>
+  <li>pypiwin32 => install by pip command </li>
+  <li>pip3 install pypiwin32</li>
  </ul>
