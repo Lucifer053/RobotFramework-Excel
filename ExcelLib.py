@@ -10,6 +10,34 @@ class ExcelLib():
         self.wb = None
         self.xl = None
 
+    def Add_Workbook(self,ExcelPath):
+        """
+        Add Excel Workbook
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Add Workbook           |  C:\\Python_Work\\SampleTest.xlsx |
+
+        """
+        self.xl = win32com.client.Dispatch('Excel.Application')
+        self.wb = self.xl.Workbooks.Add()
+        self.wb.SaveAs(ExcelPath)
+        self.xl.Application.Quit()
+
+    def Add_WorkSheet(self, SheetName):
+        """
+        Add Excel WorkSheet
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Add WorkSheet          |  SheetTest  |
+
+        """
+        ws = self.wb.Worksheets.Add()
+        ws.Name = SheetName
+
     def Open_Excel(self, ExcelPath):
         """
         Opens the Excel file to read from the path provided in the file path parameter.
@@ -220,7 +248,7 @@ class ExcelLib():
         | Save As Excel           |  C:\\Python_Work\\SampleTest.xlsx  |                                                |                  |
 
         """
-        self.wb.Save(ExcelPath)
+        self.wb.SaveAs(ExcelPath)
 
 
 
