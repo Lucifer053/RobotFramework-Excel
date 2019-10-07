@@ -119,8 +119,8 @@ class ExcelLib():
 
         Arguments:
                 |  Sheet Name (string)                      | The selected sheet that the cell value will be returned from.             |
-                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
-                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+                |  Row (int)                                | The selected row that will be returned from.                   |
+                |  Column (int)                             | The selected column that will be returned from.                |
         Example:
 
         | *Keywords*                |  *Parameters*                                             |
@@ -156,8 +156,8 @@ class ExcelLib():
 
         Arguments:
                 |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
-                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
-                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+                |  Row (int)                                | The selected row that will be used to modify from.                   |
+                |  Column (int)                             | The selected column that will be used to modify from.                |
                 |  Value (string)   | Raw value or string value    |
         Example:
 
@@ -175,7 +175,7 @@ class ExcelLib():
 
         Arguments:
                 |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
-                |  Cell Name (string)                       | The selected cell name that the value will be returned from.                  |
+                |  Cell Name (string)                       | The selected cell name that will be used to modified from.                  |
                 |  Value (string)   | Raw value or string value    |
         Example:
 
@@ -192,9 +192,9 @@ class ExcelLib():
         Delete cell data by using the column and row.
 
         Arguments:
-                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
-                |  Row (int)                                | The row integer value that will be used to modify the cell.                   |
-                |  Column (int)                             | The column integer value that will be used to modify the cell.                |
+                |  Sheet Name (string)                      | The selected sheet that the cell will be clear value.                       |
+                |  Row (int)                                | The selected row that will be used to clear value.                   |
+                |  Column (int)                             | The selected column that will be used to clear value.                |
         Example:
 
         | *Keywords*            |  *Parameters*                                                                     |
@@ -210,8 +210,8 @@ class ExcelLib():
         Delete cell data by using the given sheet name and the given cell that defines by name.
 
         Arguments:
-                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
-                |  Cell Name (string)                       | The selected cell name that the value will be returned from.                  |
+                |  Sheet Name (string)                      | The selected sheet that the cell will be clear value.                       |
+                |  Cell Name (string)                       | The selected cell that will be used to clear value.                  |
         Example:
 
         | *Keywords*            |  *Parameters*                                                                     |
@@ -229,7 +229,7 @@ class ExcelLib():
         Example:
 
         | *Keywords*            |  *Parameters*                                      |
-        | Open Excel To Write   |  C:\\Python_Work\\SampleTest.xlsx  |                  |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                  |
         | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
         | Save Excel            |                                                    |                  |
 
@@ -243,7 +243,7 @@ class ExcelLib():
         Example:
 
         | *Keywords*            |  *Parameters*                                      |
-        | Open Excel To Write   |  C:\\Python_Work\\SampleTest.xlsx  |                  |
+        | Open Excel  |  C:\\Python_Work\\SampleTest.xlsx  |                  |
         | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
         | Save As Excel           |  C:\\Python_Work\\SampleTest.xlsx  |                                                |                  |
 
@@ -259,7 +259,7 @@ class ExcelLib():
         Example:
 
         | *Keywords*            |  *Parameters*                                      |
-        | Open Excel To Write   |  C:\\Python27\\ExcelRobotTest\\ExcelRobotTest.xlsx  |                  |
+        | Open Excel            |  C:\\Python27\\ExcelRobotTest\\ExcelRobotTest.xlsx  |                  |
         | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
         | Close Excel          |    |                                                |                  |
 
@@ -267,3 +267,29 @@ class ExcelLib():
         self.wb.Close()
         self.xl.Quit()
         self.xl = None
+
+    def Read_Checkbox(self, SheetName, CheckboxName):
+        """
+        Returns the value of checkbox object in the selected worksheet.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the checkbox value will be returned from.             |
+                |  CheckboxName (string)                                | The checkbox object.                   |
+        Example:
+
+        | *Keywords*                |  *Parameters*                                             |
+        | Open Excel                |  C:\\Python_Work\\SampleTest.xlsx  |      |
+        | ${data}    |  Read_Checkbox                                        |  Sheet1  |   Check Box 1  |
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        for cb in ws.CheckBoxes():
+            if CheckboxName == cb.Name:
+                if cb.Value == 1:
+                    chk_value = True
+                else:
+                    chk_value = False
+
+                return chk_value
+
+        return None # Any case not found
