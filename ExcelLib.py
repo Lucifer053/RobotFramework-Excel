@@ -38,6 +38,40 @@ class ExcelLib():
         ws = self.wb.Worksheets.Add()
         ws.Name = SheetName
 
+    def Insert_Row(self, SheetName,Range):
+        """
+        Add Excel WorkSheet
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Insert Row          |  SheetName  | Range  |
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Range(Range).EntireRow.Insert()
+
+    def Clone_WorkSheet(self, SourceSheetName , DestinationSheetName):
+        """
+        Add Excel WorkSheet
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Clone WorkSheet      |  SourceSheetName  | DestinationSheetName |
+
+        """
+        ws1 = self.wb.Worksheets(SourceSheetName)
+        # ws2 = self.wb.Worksheets.Add()
+        # ws2.Name = DestinationSheetName
+        ws1.Copy(Before=ws1)
+        SourceName_Copy = SourceSheetName+" (2)"
+        print (SourceName_Copy)
+        ws2 = self.wb.Worksheets(SourceName_Copy)
+        ws2.Name = DestinationSheetName
+ 
+
+
     def Open_Excel(self, ExcelPath):
         """
         Opens the Excel file to read from the path provided in the file path parameter.
@@ -150,7 +184,7 @@ class ExcelLib():
         allData = ws.UsedRange
         return allData.Range(CellName)
 
-    def Write_Cell_Data(self,SheetName,iRow,iCol,TestData):
+    def Write_Cell_Data(self,SheetName,iRow,iCol,InputData):
         """
         Write data to cell by using the column and row.
 
@@ -166,10 +200,11 @@ class ExcelLib():
         | Write Cell Data |  Sheet1                                        |  1  |    1    |  SampleData     |
 
         """
+        print("Data :"+InputData)
         ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Value = TestData
+        ws.Cells(int(iRow),int(iCol)).Value = str(InputData)
 
-    def Write_Cell_Data_By_Name(self,SheetName,CellName,TestData):
+    def Write_Cell_Data_By_Name(self,SheetName,CellName,InputData):
         """
         Write data to cell by using the given sheet name and the given cell that defines by name.
 
@@ -184,8 +219,9 @@ class ExcelLib():
         | Write Cell Data By Name |  Sheet1                                        |  A2  |  SampleData           |       |
 
         """
+        print("Data :" + InputData)
         ws = self.wb.Worksheets(SheetName)
-        ws.Range(CellName).Value = TestData
+        ws.Range(CellName).Value = str(InputData)
 
     def Clear_Cell_Data(self,SheetName,iRow,iCol):
         """
