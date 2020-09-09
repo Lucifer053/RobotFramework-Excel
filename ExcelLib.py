@@ -1,6 +1,6 @@
 import win32com.client
 from win32com.client import Dispatch
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 class ExcelLib():
 
@@ -38,18 +38,58 @@ class ExcelLib():
         ws = self.wb.Worksheets.Add()
         ws.Name = SheetName
 
-    def Set_Font_Bold(self, SheetName,Range,Status):
+    def Set_WrapText(self, SheetName,iRow,iCol,Status):
+        """
+        Set Excel WrapText Style
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Set WrapText        |  SheetName  | 1  | 1  |True
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Cells(int(iRow),int(iCol)).WrapText = Status
+
+    def Set_Font_Bold(self, SheetName,iRow,iCol,Status):
         """
         Set Excel Font Bold Style
 
         Example:
 
         | *Keywords*           |  *Parameters*                                      |
-        | Set Font Bold        |  SheetName  | A1  |
+        | Set Font Bold        |  SheetName  | 1  | 1  |True
 
         """
         ws = self.wb.Worksheets(SheetName)
-        ws.Range(Range).Font.Bold = Status
+        ws.Cells(int(iRow),int(iCol)).Font.Bold = Status
+
+    def Set_Font_Color(self, SheetName,iRow,iCol,ColorCode):
+        """
+        Set Excel Font Color Style
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Set Font Color        |  SheetName  | 1  | 1  | 3
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Cells(int(iRow),int(iCol)).Font.ColorIndex = ColorCode
+
+    def Set_Cell_Color(self, SheetName,iRow,iCol,ColorCode):
+        """
+        Set Excel background color Style
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Set Cell Color        |  SheetName  | 1  | 1  |255
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Cells(int(iRow),int(iCol)).Interior.Color = ColorCode
+
 
     def Insert_Row(self, SheetName,Range):
         """
