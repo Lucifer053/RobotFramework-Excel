@@ -23,7 +23,6 @@ class ExcelLib():
         self.xl = win32com.client.Dispatch('Excel.Application')
         self.wb = self.xl.Workbooks.Add()
         self.wb.SaveAs(ExcelPath)
-        self.xl.Application.Quit()
 
     def Add_WorkSheet(self, SheetName):
         """
