@@ -38,14 +38,27 @@ class ExcelLib():
         ws = self.wb.Worksheets.Add()
         ws.Name = SheetName
 
-    def Insert_Row(self, SheetName,Range):
+    def Set_Font_Bold(self, SheetName,Range,Status):
         """
-        Add Excel WorkSheet
+        Set Excel Font Bold Style
 
         Example:
 
         | *Keywords*           |  *Parameters*                                      |
-        | Insert Row          |  SheetName  | Range  |
+        | Set Font Bold        |  SheetName  | A1  |
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Range(Range).Font.Bold = Status
+
+    def Insert_Row(self, SheetName,Range):
+        """
+        Insert Excel Row
+
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Insert Row          |  SheetName  | A1  |
 
         """
         ws = self.wb.Worksheets(SheetName)
@@ -53,7 +66,7 @@ class ExcelLib():
 
     def Clone_WorkSheet(self, SourceSheetName , DestinationSheetName):
         """
-        Add Excel WorkSheet
+        Clone Excel WorkSheet
 
         Example:
 
