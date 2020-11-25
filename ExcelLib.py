@@ -2,7 +2,7 @@
 # from win32com.client import Dispatch
 import win32com.client as win32
 
-__version__ = '0.0.2'
+__version__ = '1.0.0'
 
 class ExcelLib():
 
