@@ -1,5 +1,7 @@
-import win32com.client
-from win32com.client import Dispatch
+# import win32com.client
+# from win32com.client import Dispatch
+import win32com.client as win32
+
 __version__ = '0.0.2'
 
 class ExcelLib():
@@ -136,7 +138,8 @@ class ExcelLib():
         | Open Excel           |  C:\\Python_Work\\SampleTest.xlsx  |
 
         """
-        self.xl = win32com.client.Dispatch('Excel.Application')
+        # self.xl = win32com.client.Dispatch('Excel.Application')
+        self.xl = win32.gencache.EnsureDispatch('Excel.Application')
         self.wb = self.xl.Workbooks.Open(ExcelPath)
 
     def Get_Sheet_Count(self):
@@ -160,10 +163,23 @@ class ExcelLib():
 
         | *Keywords*              |  *Parameters*                                      |
         | Open Excel              |  C:\\Python_Work\\SampleTest.xlsx  |
-        | ${sheetname}    |  Get Sheets Names                                                    |
+        | ${sheetname}    |  Get Sheets Name                                                    |
 
         """
         return self.wb.Activesheet.Name
+
+    def Get_Sheet_Name_By_Index(self,Index):
+        """
+        Returns the names of all the worksheets in the current workbook.
+
+        Example:
+
+        | *Keywords*              |  *Parameters*                                      |
+        | Open Excel              |  C:\\Python_Work\\SampleTest.xlsx  |
+        | ${sheetname}    |  Get Sheets Name By Index | 1                                                  |
+
+        """
+        return self.wb.Sheets(int(Index)).Name
 
     def Get_Row_Count(self,SheetName):
         """
@@ -274,6 +290,41 @@ class ExcelLib():
         print("Data :" + InputData)
         ws = self.wb.Worksheets(SheetName)
         ws.Range(CellName).Value = str(InputData)
+
+    def Get_ActiveControl_TextBox_Data(self,SheetName,TextboxName):
+        """
+        Uses the ActiveX Control name to return the data from that cell.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell value will be returned from.                        |
+                |  Textbox Name (string)                       | The selected sheet that the ActiveX Control name will be returned from.                   |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | ${Data11}             | Get ActiveControl TextBox Data        |  Sheet1           |  Textbox1           |
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        return ws.Shapes(TextboxName).OLEFormat.Object.Object.Value
+
+    def Write_ActiveControl_TextBox_Data(self,SheetName,TextboxName,InputData):
+        """
+        Write data to ActiveX Control by using the given sheet name and the given ActiveX Control name.
+
+        Arguments:
+                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
+                |  Textbox Name (string)                       | The selected ActiveX Control name that will be used to modified from.                  |
+                |  Value (string)   | Raw value or string value    |
+        Example:
+
+        | *Keywords*            |  *Parameters*                                                                     |
+        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
+        | Write ActiveControl TextBox Data |  Sheet1                                        |  Textbox1           |   ExampleData |
+
+        """
+        ws = self.wb.Worksheets(SheetName)
+        ws.Shapes(TextboxName).OLEFormat.Object.Object.Value = InputData
 
     def Clear_Cell_Data(self,SheetName,iRow,iCol):
         """
