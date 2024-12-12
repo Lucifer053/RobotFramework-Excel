@@ -1,8 +1,6 @@
-# import win32com.client
-# from win32com.client import Dispatch
-import win32com.client as win32
+import openpyxl
 
-__version__ = '1.0.0'
+__version__ = '0.0.1'
 
 class ExcelLib():
 
@@ -11,6 +9,7 @@ class ExcelLib():
         ROBOT_LIBRARY_VERSION = __version__
         self.wb = None
         self.xl = None
+        self.filename = None
 
     def Add_Workbook(self,ExcelPath):
         """
@@ -22,36 +21,21 @@ class ExcelLib():
         | Add Workbook           |  C:\\Python_Work\\SampleTest.xlsx |
 
         """
-        self.xl = win32com.client.Dispatch('Excel.Application')
-        self.wb = self.xl.Workbooks.Add()
-        self.wb.SaveAs(ExcelPath)
-
-    def Add_WorkSheet(self, SheetName):
+        self.xl = openpyxl.Workbook()
+        self.xl.save(ExcelPath)
+    
+    def Add_Worksheet(self,SheetName):
         """
-        Add Excel WorkSheet
+        Add Excel Worksheet
 
         Example:
 
         | *Keywords*           |  *Parameters*                                      |
-        | Add WorkSheet          |  SheetTest  |
-
+        | Add Worksheet           |  SheetName |
+        
         """
-        ws = self.wb.Worksheets.Add()
-        ws.Name = SheetName
-
-    def Set_WrapText(self, SheetName,iRow,iCol,Status):
-        """
-        Set Excel WrapText Style
-
-        Example:
-
-        | *Keywords*           |  *Parameters*                                      |
-        | Set WrapText        |  SheetName  | 1  | 1  |True
-
-        """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).WrapText = Status
-
+        self.wb.create_sheet(SheetName)
+        
     def Set_Font_Bold(self, SheetName,iRow,iCol,Status):
         """
         Set Excel Font Bold Style
@@ -62,9 +46,10 @@ class ExcelLib():
         | Set Font Bold        |  SheetName  | 1  | 1  |True
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Font.Bold = Status
-
+        ws = self.wb[SheetName]
+        cell = ws.cell(row=int(iRow),column=int(iCol))
+        cell.font = cell.font.copy(bold=Status)
+        
     def Set_Font_Color(self, SheetName,iRow,iCol,ColorCode):
         """
         Set Excel Font Color Style
@@ -75,56 +60,36 @@ class ExcelLib():
         | Set Font Color        |  SheetName  | 1  | 1  | 3
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Font.ColorIndex = ColorCode
+        ws = self.wb[SheetName]
+        cell = ws.cell(row=int(iRow),column=int(iCol))
+        cell.font = cell.font.copy(color=ColorCode)
 
-    def Set_Cell_Color(self, SheetName,iRow,iCol,ColorCode):
-        """
-        Set Excel background color Style
+    
+    def Insert_Row(self, SheetName,iRow):
+       """
+       Insert Excel Row
 
-        Example:
+       Example:
 
-        | *Keywords*           |  *Parameters*                                      |
-        | Set Cell Color        |  SheetName  | 1  | 1  |255
+       | *Keywords*           |  *Parameters*                                      |
+       | Insert Row          |  SheetName  | Row  |
 
-        """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Interior.Color = ColorCode
+       """
+       ws = self.wb[SheetName]
+       ws.insert_rows(int(iRow))
 
+    def Delete_Row(self, SheetName,iRow):
+       """
+       Delete Excel Row
 
-    def Insert_Row(self, SheetName,Range):
-        """
-        Insert Excel Row
+       Example:
 
-        Example:
+       | *Keywords*           |  *Parameters*                                      |
+       | Insert Row          |  SheetName  | Row  |
 
-        | *Keywords*           |  *Parameters*                                      |
-        | Insert Row          |  SheetName  | A1  |
-
-        """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Range(Range).EntireRow.Insert()
-
-    def Clone_WorkSheet(self, SourceSheetName , DestinationSheetName):
-        """
-        Clone Excel WorkSheet
-
-        Example:
-
-        | *Keywords*           |  *Parameters*                                      |
-        | Clone WorkSheet      |  SourceSheetName  | DestinationSheetName |
-
-        """
-        ws1 = self.wb.Worksheets(SourceSheetName)
-        # ws2 = self.wb.Worksheets.Add()
-        # ws2.Name = DestinationSheetName
-        ws1.Copy(Before=ws1)
-        SourceName_Copy = SourceSheetName+" (2)"
-        print (SourceName_Copy)
-        ws2 = self.wb.Worksheets(SourceName_Copy)
-        ws2.Name = DestinationSheetName
- 
-
+       """
+       ws = self.wb[SheetName]
+       ws.delete_rows(int(iRow))
 
     def Open_Excel(self, ExcelPath):
         """
@@ -138,11 +103,25 @@ class ExcelLib():
         | Open Excel           |  C:\\Python_Work\\SampleTest.xlsx  |
 
         """
-        # self.xl = win32com.client.Dispatch('Excel.Application')
-        self.xl = win32.gencache.EnsureDispatch('Excel.Application')
-        self.wb = self.xl.Workbooks.Open(ExcelPath)
+        self.wb = openpyxl.load_workbook(ExcelPath,data_only=True)
+        self.filename = ExcelPath
 
-    def Get_Sheet_Count(self):
+    def Open_Excel_FORMULA(self, ExcelPath):
+        """
+        Opens the Excel file to read from the path provided in the file path parameter.
+
+        Arguments:
+                |  File Path (string) | The Excel file name or path will be opened.  |
+        Example:
+
+        | *Keywords*           |  *Parameters*                                      |
+        | Open_Excel_FORMULA          |  C:\\Python_Work\\SampleTest.xlsx  |
+
+        """
+        self.wb = openpyxl.load_workbook(ExcelPath,keep_vba=True,data_only=False)
+        self.filename = ExcelPath
+
+    def Get_Sheets_Count(self):
         """
         Returns the number of worksheets in the current workbook.
 
@@ -153,9 +132,9 @@ class ExcelLib():
         | ${sheetcount}    |  Get Sheets Count                                              |
 
         """
-        return self.wb.Worksheets.Count
+        return len(self.wb.sheetnames)
 
-    def Get_Sheet_Name(self):
+    def Get_Sheets_Name(self):
         """
         Returns the names of all the worksheets in the current workbook.
 
@@ -166,9 +145,9 @@ class ExcelLib():
         | ${sheetname}    |  Get Sheets Name                                                    |
 
         """
-        return self.wb.Activesheet.Name
+        return self.wb.sheetnames
 
-    def Get_Sheet_Name_By_Index(self,Index):
+    def Get_Sheets_Name_By_Index(self,Index):
         """
         Returns the names of all the worksheets in the current workbook.
 
@@ -179,7 +158,7 @@ class ExcelLib():
         | ${sheetname}    |  Get Sheets Name By Index | 1                                                  |
 
         """
-        return self.wb.Sheets(int(Index)).Name
+        return  self.wb.worksheets[int(Index)].title
 
     def Get_Row_Count(self,SheetName):
         """
@@ -194,9 +173,9 @@ class ExcelLib():
         | ${RowCount}           |  Get Row Count                                     | TestSheet1 |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        allData = ws.UsedRange
-        return allData.Rows.Count
+        ws = self.wb[SheetName]
+        return ws.max_row
+
 
     def Get_Column_Count(self,SheetName):
         """
@@ -211,9 +190,8 @@ class ExcelLib():
         | ${ColCount}        |  Get Column Count                                        | TestSheet1 |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        allData = ws.UsedRange
-        return allData.Columns.Count
+        ws = self.wb[SheetName]
+        return ws.max_column
 
     def Read_Cell_Data(self,SheetName,iRow,iCol):
         """
@@ -230,9 +208,8 @@ class ExcelLib():
         | ${data}    |  Read Cell Data                                        |  Sheet1  |   1  |   1  |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        allData = ws.UsedRange
-        return allData.Cells(int(iRow),int(iCol))
+        ws = self.wb[SheetName]
+        return  ws.cell(row=int(iRow),column=int(iCol)).value
 
     def Read_Cell_Data_By_Name(self,SheetName,CellName):
         """
@@ -248,9 +225,8 @@ class ExcelLib():
         | ${data}    |  Read Cell Data By Name                                      |  Sheet1  |   A1  |     |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        allData = ws.UsedRange
-        return allData.Range(CellName)
+        ws = self.wb[SheetName]
+        return ws[CellName].value
 
     def Write_Cell_Data(self,SheetName,iRow,iCol,InputData):
         """
@@ -269,8 +245,8 @@ class ExcelLib():
 
         """
         print("Data :"+InputData)
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Value = str(InputData)
+        ws = self.wb[SheetName]
+        ws.cell(row=int(iRow),column=int(iCol)).value = str(InputData)
 
     def Write_Cell_Data_By_Name(self,SheetName,CellName,InputData):
         """
@@ -288,43 +264,8 @@ class ExcelLib():
 
         """
         print("Data :" + InputData)
-        ws = self.wb.Worksheets(SheetName)
-        ws.Range(CellName).Value = str(InputData)
-
-    def Get_ActiveControl_TextBox_Data(self,SheetName,TextboxName):
-        """
-        Uses the ActiveX Control name to return the data from that cell.
-
-        Arguments:
-                |  Sheet Name (string)                      | The selected sheet that the cell value will be returned from.                        |
-                |  Textbox Name (string)                       | The selected sheet that the ActiveX Control name will be returned from.                   |
-        Example:
-
-        | *Keywords*            |  *Parameters*                                                                     |
-        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
-        | ${Data11}             | Get ActiveControl TextBox Data        |  Sheet1           |  Textbox1           |
-
-        """
-        ws = self.wb.Worksheets(SheetName)
-        return ws.Shapes(TextboxName).OLEFormat.Object.Object.Value
-
-    def Write_ActiveControl_TextBox_Data(self,SheetName,TextboxName,InputData):
-        """
-        Write data to ActiveX Control by using the given sheet name and the given ActiveX Control name.
-
-        Arguments:
-                |  Sheet Name (string)                      | The selected sheet that the cell will be modified from.                       |
-                |  Textbox Name (string)                       | The selected ActiveX Control name that will be used to modified from.                  |
-                |  Value (string)   | Raw value or string value    |
-        Example:
-
-        | *Keywords*            |  *Parameters*                                                                     |
-        | Open Excel            |  C:\\Python_Work\\SampleTest.xlsx  |                      |       |
-        | Write ActiveControl TextBox Data |  Sheet1                                        |  Textbox1           |   ExampleData |
-
-        """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Shapes(TextboxName).OLEFormat.Object.Object.Value = InputData
+        ws = self.wb[SheetName]
+        ws[CellName].value = str(InputData)
 
     def Clear_Cell_Data(self,SheetName,iRow,iCol):
         """
@@ -341,8 +282,8 @@ class ExcelLib():
         | Clear Cell Data |  Sheet1                                        |  1  |    1    |       |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Cells(int(iRow),int(iCol)).Value = ''
+        ws = self.wb[SheetName]
+        ws.cell(row=int(iRow),column=int(iCol)).value = ''
 
     def Clear_Cell_Data_By_Name(self,SheetName,CellName):
         """
@@ -358,8 +299,8 @@ class ExcelLib():
         | Clear Cell Data By Name |  Sheet1                                        |  A1  |        |       |
 
         """
-        ws = self.wb.Worksheets(SheetName)
-        ws.Range(CellName).Value = ''
+        ws = self.wb[SheetName]
+        ws[CellName].value = ''
 
     def Save_Excel(self):
         """
@@ -373,23 +314,7 @@ class ExcelLib():
         | Save Excel            |                                                    |                  |
 
         """
-        self.wb.Save()
-
-    def Save_As_Excel(self,ExcelPath):
-        """
-        Saves the Excel file that was opened to destination path
-
-        Example:
-
-        | *Keywords*            |  *Parameters*                                      |
-        | Open Excel  |  C:\\Python_Work\\SampleTest.xlsx  |                  |
-        | Write Cell Data       |  TestSheet1                                        |  Sheet1  |  1    |  1  |  SampleData  |
-        | Save As Excel           |  C:\\Python_Work\\SampleTest.xlsx  |                                                |                  |
-
-        """
-        self.wb.SaveAs(ExcelPath)
-
-
+        self.wb.save(self.filename)
 
     def Close_Excel(self):
         """
@@ -403,32 +328,5 @@ class ExcelLib():
         | Close Excel          |    |                                                |                  |
 
         """
-        self.wb.Close()
-        self.xl.Quit()
+        self.wb.close()
         self.xl = None
-
-    def Read_Checkbox(self, SheetName, CheckboxName):
-        """
-        Returns the value of checkbox object in the selected worksheet.
-
-        Arguments:
-                |  Sheet Name (string)                      | The selected sheet that the checkbox value will be returned from.             |
-                |  CheckboxName (string)                                | The checkbox object.                   |
-        Example:
-
-        | *Keywords*                |  *Parameters*                                             |
-        | Open Excel                |  C:\\Python_Work\\SampleTest.xlsx  |      |
-        | ${data}    |  Read_Checkbox                                        |  Sheet1  |   Check Box 1  |
-
-        """
-        ws = self.wb.Worksheets(SheetName)
-        for cb in ws.CheckBoxes():
-            if CheckboxName == cb.Name:
-                if cb.Value == 1:
-                    chk_value = True
-                else:
-                    chk_value = False
-
-                return chk_value
-
-        return None # Any case not found

@@ -5,12 +5,12 @@
   
  <h1>Requirements</h1>
  <ul>
-  <li>Python >= 3.3</li>
-  <li>Robot Framework >= 3.0</li>
+  <li>Python >= 3.6</li>
+  <li>Robot Framework >= 5.0</li>
   <li>pypiwin32 => To install use the following pip command: </li>
  </ul>
    <div class="highlight highlight-source-shell">
-    <pre>pip3 install pypiwin32</pre>
+    <pre>pip3 install openpyxl</pre>
    </div>
    
   <h1>Limitation</h1>
